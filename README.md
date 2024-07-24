@@ -7,3 +7,54 @@
 - [React Fire npm](https://github.com/FirebaseExtended/reactfire)
 - [github codelab react](https://github.com/firebase/friendlyeats-web/blob/master/reactfire-end/hosting/src/app.tsx)
 - [codelap react firebase](https://firebase.google.com/codelabs/firestore-web?hl=es-419#2)
+
+### Input File
+
+- [input file](https://github.com/shadcn-ui/ui/discussions/2137)
+
+### Users
+
+- [random user api](https://randomuser.me/api/)
+
+### Custom Scroll Bar
+
+- [tailwind-scrollbar](https://adoxography.github.io/tailwind-scrollbar/examples/)
+
+```css
+.custom-scrollbar {
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(107, 114, 128, 0.7);
+  border-radius: 10px;
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: none; /* Hide scrollbar by default */
+}
+
+.custom-scrollbar:hover {
+  scrollbar-width: thin; /* Show thin scrollbar on hover */
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+```
