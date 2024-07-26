@@ -7,6 +7,8 @@
 - [React Fire npm](https://github.com/FirebaseExtended/reactfire)
 - [github codelab react](https://github.com/firebase/friendlyeats-web/blob/master/reactfire-end/hosting/src/app.tsx)
 - [codelap react firebase](https://firebase.google.com/codelabs/firestore-web?hl=es-419#2)
+- [react icons](https://react-icons.github.io/react-icons/)
+- [emoji-picker-react](https://www.npmjs.com/package/emoji-picker-react)
 
 ### Input File
 
@@ -15,6 +17,7 @@
 ### Users
 
 - [random user api](https://randomuser.me/api/)
+- [random 15 Mexican users](https://randomuser.me/api/?results=15&nat=mx)
 
 ### Custom Scroll Bar
 
@@ -58,3 +61,7 @@
   scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
 }
 ```
+
+### IA copilot
+
+- [supermaven.com](https://supermaven.com/)

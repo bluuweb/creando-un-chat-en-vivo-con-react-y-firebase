@@ -70,9 +70,17 @@
 
 .custom-scrollbar {
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
+.custom-scrollbar:hover {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+/* .custom-scrollbar::-webkit-scrollbar {
   width: 0;
   background: transparent;
 }
@@ -93,14 +101,4 @@
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
   background-color: rgba(107, 114, 128, 0.7);
   border-radius: 10px;
-}
-
-/* For Firefox */
-.custom-scrollbar {
-  scrollbar-width: none; /* Hide scrollbar by default */
-}
-
-.custom-scrollbar:hover {
-  scrollbar-width: thin; /* Show thin scrollbar on hover */
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
-}
+} */
