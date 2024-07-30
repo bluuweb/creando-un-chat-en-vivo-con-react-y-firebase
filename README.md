@@ -9,6 +9,7 @@
 - [codelap react firebase](https://firebase.google.com/codelabs/firestore-web?hl=es-419#2)
 - [react icons](https://react-icons.github.io/react-icons/)
 - [emoji-picker-react](https://www.npmjs.com/package/emoji-picker-react)
+- [zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
 
 ### Input File
 

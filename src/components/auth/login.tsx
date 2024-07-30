@@ -20,8 +20,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoadingStore } from "@/store/loading-store";
+import { AuthError, signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "reactfire";
 
 const Login = () => {
+  const auth = useAuth();
+  const { loading, setLoading } = useLoadingStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,7 +37,25 @@ const Login = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    try {
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+    } catch (error) {
+      console.log(error);
+      const firebaseError = error as AuthError;
+      if (firebaseError.code === "auth/invalid-login-credentials") {
+        form.setError("email", {
+          type: "manual",
+          message: "Invalid credentials",
+        });
+        form.setError("password", {
+          type: "manual",
+          message: "Invalid credentials",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -82,7 +106,12 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Login</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+              >
+                Login
+              </Button>
             </form>
           </Form>
         </CardContent>

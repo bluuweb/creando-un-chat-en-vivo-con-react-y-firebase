@@ -20,8 +20,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoadingStore } from "@/store/loading-store";
+import {
+  AuthError,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { useAuth, useStorage } from "reactfire";
 
 const Register = () => {
+  const auth = useAuth();
+  const storage = useStorage();
+  const { loading, setLoading } = useLoadingStore();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -34,7 +46,47 @@ const Register = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    // console.log(values);
+    try {
+      setLoading(true);
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      console.log("User created");
+
+      // 1. Guardar avatar en storage
+      const storageRef = ref(storage, "avatars/" + user.uid + ".jpg");
+      await uploadBytes(storageRef, values.photoURL);
+
+      // 2. Recuperar la URL del avatar
+      const photoURL = await getDownloadURL(storageRef);
+
+      // 3. Actualizar el perfil del usuario con la URL del avatar
+      await updateProfile(user, {
+        displayName: values.displayName,
+        photoURL,
+      });
+
+      console.log("Profile updated");
+    } catch (error) {
+      console.log(error);
+
+      const firebaseError = error as AuthError;
+
+      if (firebaseError.code === "auth/email-already-in-use") {
+        form.setError("email", {
+          type: "manual",
+          message: "Email already in use",
+        });
+        return;
+      }
+
+      console.log("Error creating user");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -140,7 +192,12 @@ const Register = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit">Register</Button>
+              <Button
+                type="submit"
+                disabled={loading}
+              >
+                Register
+              </Button>
             </form>
           </Form>
         </CardContent>
