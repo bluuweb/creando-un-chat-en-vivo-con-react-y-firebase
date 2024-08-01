@@ -66,3 +66,21 @@
 ### IA copilot
 
 - [supermaven.com](https://supermaven.com/)
+
+## Tips
+
+### non-null assertion operator
+
+En TypeScript, el operador ! se llama "non-null assertion operator". Se utiliza para indicar al compilador que una expresión no es null ni undefined, incluso si el tipo de la expresión podría serlo. Esto es útil cuando el programador está seguro de que el valor no será null o undefined en tiempo de ejecución, pero el compilador no puede inferirlo.
+
+ejemplo:
+
+```ts
+if (auth.currentUser!.email === values.email) {
+  form.setError("email", {
+    type: "manual",
+    message: "You can't search yourself",
+  });
+  return;
+}
+```

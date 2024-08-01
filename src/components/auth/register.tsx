@@ -20,17 +20,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { UserDB } from "@/schemas/firestore-schema";
 import { useLoadingStore } from "@/store/loading-store";
 import {
   AuthError,
   createUserWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { useAuth, useStorage } from "reactfire";
+import { useAuth, useFirestore, useStorage } from "reactfire";
 
 const Register = () => {
   const auth = useAuth();
+  const db = useFirestore();
   const storage = useStorage();
   const { loading, setLoading } = useLoadingStore();
 
@@ -70,6 +73,21 @@ const Register = () => {
       });
 
       console.log("Profile updated");
+
+      // 4. guardar la collection users en firestore
+      const userDB: UserDB = {
+        displayName: values.displayName,
+        email: values.email,
+        photoURL,
+        uid: user.uid,
+        friends: [],
+        rooms: [],
+      };
+
+      const userDBRef = doc(db, "users", user.uid);
+      await setDoc(userDBRef, userDB);
+
+      console.log("UserDB created");
     } catch (error) {
       console.log(error);
 
@@ -196,7 +214,7 @@ const Register = () => {
                 type="submit"
                 disabled={loading}
               >
-                Register
+                {loading ? "Loading..." : "Register"}
               </Button>
             </form>
           </Form>

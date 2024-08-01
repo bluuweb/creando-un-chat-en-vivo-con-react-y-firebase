@@ -13,8 +13,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RoomDB, UserRoom } from "@/schemas/firestore-schema";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  limit,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { useAuth, useFirestore } from "reactfire";
 
 const FriendSearch = () => {
+  const db = useFirestore();
+  const auth = useAuth();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -23,9 +39,103 @@ const FriendSearch = () => {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    try {
+      // En TypeScript, el operador ! se llama "non-null assertion operator". Se utiliza para indicar al compilador que una expresión no es null ni undefined, incluso si el tipo de la expresión podría serlo. Esto es útil cuando el programador está seguro de que el valor no será null o undefined en tiempo de ejecución, pero el compilador no puede inferirlo.
+      if (auth.currentUser!.email === values.email) {
+        form.setError("email", {
+          type: "manual",
+          message: "You can't search yourself",
+        });
+        return;
+      }
+
+      const q = query(
+        collection(db, "users"),
+        where("email", "==", values.email),
+        limit(1)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        form.setError("email", {
+          type: "manual",
+          message: "User not found",
+        });
+        return;
+      }
+
+      // if (!querySnapshot.docs[0]) {
+      //   form.setError("email", {
+      //     type: "manual",
+      //     message: "User not found",
+      //   });
+      //   return;
+      // }
+
+      const friendDB = querySnapshot.docs[0].data();
+
+      // verificar si ya son amigos
+      const q2 = query(
+        collection(db, "users"),
+        where("uid", "==", auth.currentUser!.uid),
+        where("friends", "array-contains", friendDB.uid)
+      );
+
+      const querySnapshot2 = await getDocs(q2);
+
+      if (!querySnapshot2.empty) {
+        form.setError("email", {
+          type: "manual",
+          message: "You are already friends",
+        });
+        return;
+      }
+
+      // crear la room
+      const newRoomDB: RoomDB = {
+        messages: [],
+        users: [auth.currentUser?.uid, friendDB.uid],
+      };
+      const roomRef = await addDoc(collection(db, "rooms"), newRoomDB);
+
+      console.log("1. Room created");
+
+      // agregar la room a ambos usuarios
+      const currentUserRoom: UserRoom = {
+        roomid: roomRef.id,
+        lastMessage: "",
+        timestamp: "",
+        friendId: friendDB.uid,
+      };
+
+      const friendRoom: UserRoom = {
+        roomid: roomRef.id,
+        lastMessage: "",
+        timestamp: "",
+        friendId: auth.currentUser!.uid,
+      };
+
+      const currentUserRef = doc(db, "users", auth.currentUser!.uid);
+      const friendRef = doc(db, "users", friendDB.uid);
+
+      await updateDoc(currentUserRef, {
+        rooms: arrayUnion(currentUserRoom),
+        friends: arrayUnion(friendDB.uid),
+      });
+
+      console.log("2. Current user room added");
+
+      await updateDoc(friendRef, {
+        rooms: arrayUnion(friendRoom),
+        friends: arrayUnion(auth.currentUser!.uid),
+      });
+
+      console.log("3. Friend room added");
+
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
