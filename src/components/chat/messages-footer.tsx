@@ -1,12 +1,52 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UserDB } from "@/schemas/firestore-schema";
+import { Friend } from "@/store/chat-store";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import {
+  arrayUnion,
+  doc,
+  Firestore,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { useState } from "react";
 import { BsEmojiSmileFill } from "react-icons/bs";
+import { useAuth, useFirestore } from "reactfire";
 
-const MessagesFooter = () => {
+const updateLastMessage = async (
+  db: Firestore,
+  uid: string,
+  roomid: string,
+  message: string
+) => {
+  const userRef = doc(db, "users", uid);
+  const { rooms } = (await getDoc(userRef)).data() as UserDB;
+
+  const roomUpdateLastMessage = rooms.map((room) => {
+    if (room.roomid === roomid) {
+      return {
+        ...room,
+        lastMessage: message,
+        timestamp: new Date().toISOString(),
+      };
+    }
+    return room;
+  });
+  await updateDoc(userRef, {
+    rooms: roomUpdateLastMessage,
+  });
+};
+
+interface MessagesFooterProps {
+  friend: Friend;
+}
+
+const MessagesFooter = ({ friend }: MessagesFooterProps) => {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const db = useFirestore();
+  const auth = useAuth();
 
   const onEmojiClick = (emojiData: EmojiClickData) => {
     setMessage((prev) => prev + emojiData.emoji);
@@ -15,12 +55,33 @@ const MessagesFooter = () => {
   const handleSendMessage = async () => {
     if (!message) return;
 
-    // Send message to the server
-    console.log(message);
+    try {
+      const roomRef = doc(db, "rooms", friend.roomid);
+      await updateDoc(roomRef, {
+        messages: arrayUnion({
+          message,
+          timestamp: new Date().toISOString(),
+          uid: auth.currentUser!.uid,
+        }),
+      });
 
-    // Clear the input
-    setMessage("");
-    setShowEmojiPicker(false);
+      const currentRoomId = friend.roomid;
+      // Actualizar lastMessage
+      await updateLastMessage(
+        db,
+        auth.currentUser!.uid,
+        currentRoomId,
+        message
+      );
+
+      await updateLastMessage(db, friend.uid, currentRoomId, message);
+
+      // Clear the input
+      setMessage("");
+      setShowEmojiPicker(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

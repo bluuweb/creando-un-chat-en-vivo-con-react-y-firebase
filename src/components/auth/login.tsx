@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useChatStore } from "@/store/chat-store";
 import { useLoadingStore } from "@/store/loading-store";
 import { AuthError, signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "reactfire";
@@ -27,6 +28,7 @@ import { useAuth } from "reactfire";
 const Login = () => {
   const auth = useAuth();
   const { loading, setLoading } = useLoadingStore();
+  const { resetFriend } = useChatStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,6 +42,7 @@ const Login = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, values.email, values.password);
+      resetFriend();
     } catch (error) {
       console.log(error);
       const firebaseError = error as AuthError;

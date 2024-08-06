@@ -10,6 +10,7 @@ interface Friend {
   displayName: string;
   photoURL: string;
   lastMessage: string;
+  roomid: string;
 }
 
 const Friends = () => {
@@ -18,29 +19,10 @@ const Friends = () => {
   const db = useFirestore();
   const auth = useAuth();
 
-  // useEffect(() => {
-  //   const getFriends = async () => {
-  //     const res = await fetch("https://randomuser.me/api/?results=15&nat=mx");
-  //     const { results } = await res.json();
-
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //     const data = results.map((user: any) => ({
-  //       uid: user.login.uuid,
-  //       displayName: user.name.first,
-  //       photoURL: user.picture.large,
-  //       lastMessage: "Hi, i am " + user.name.first,
-  //     }));
-
-  //     setFriends(data);
-  //   };
-
-  //   getFriends();
-  // }, []);
-
   useEffect(() => {
     const userRef = doc(db, "users", auth.currentUser!.uid);
     const unsubcribe = onSnapshot(userRef, (document) => {
-      // console.log("Current data: ", doc.data()?.rooms);
+      // console.log("Current data: ", document.data()?.rooms);
 
       const friendPromises = document.data()?.rooms.map((room: UserRoom) => {
         const friendRef = doc(db, "users", room.friendId);
@@ -49,12 +31,28 @@ const Friends = () => {
 
       Promise.all(friendPromises).then((friends) => {
         const data = friends.map((friend) => {
+          const room: UserRoom = document
+            .data()
+            ?.rooms.find((room: UserRoom) => room.friendId === friend.id);
+
+          // console.log({ room });
+
           const data = friend.data();
+
+          console.log({
+            uid: data.uid,
+            displayName: data.displayName,
+            photoURL: data.photoURL,
+            roomid: room?.roomid,
+            lastMessage: room?.lastMessage,
+          });
+
           return {
             uid: data.uid,
             displayName: data.displayName,
             photoURL: data.photoURL,
-            lastMessage: data.rooms[0].lastMessage,
+            roomid: room?.roomid,
+            lastMessage: room?.lastMessage,
           };
         });
 

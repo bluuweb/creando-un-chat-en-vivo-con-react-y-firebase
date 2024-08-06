@@ -10,6 +10,7 @@
 - [react icons](https://react-icons.github.io/react-icons/)
 - [emoji-picker-react](https://www.npmjs.com/package/emoji-picker-react)
 - [zustand](https://docs.pmnd.rs/zustand/getting-started/introduction)
+- [timeago.js](https://www.npmjs.com/package/timeago.js/v/4.0.0-beta.3)
 
 ### Input File
 

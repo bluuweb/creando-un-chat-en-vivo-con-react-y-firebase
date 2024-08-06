@@ -4,8 +4,14 @@ import AuthLayout from "./auth-layout";
 import ChatLayout from "./chat-layout";
 
 const RootLayout = () => {
-  const { status, data: signInCheckResult } = useSigninCheck();
+  const { status, data: signInCheckResult, hasEmitted } = useSigninCheck();
   const { loading } = useLoadingStore();
+
+  console.log({
+    status,
+    signInCheckResult,
+    hasEmitted,
+  });
 
   if (status === "loading") {
     return <span>loading...</span>;
