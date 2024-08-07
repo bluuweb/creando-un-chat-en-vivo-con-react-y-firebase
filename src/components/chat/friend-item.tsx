@@ -15,14 +15,15 @@ const FriendItem = ({
   roomid,
   uid,
 }: FriendItemProps) => {
-  const { setFriend } = useChatStore();
+  const { setFriend, resetFriend } = useChatStore();
 
   return (
     <article
       className="flex items-center gap-x-3 py-2 px-4 border-b hover:bg-gray-100 cursor-pointer"
-      onClick={() =>
-        setFriend({ displayName, photoURL, lastMessage, roomid, uid })
-      }
+      onClick={() => {
+        resetFriend();
+        setFriend({ displayName, photoURL, lastMessage, roomid, uid });
+      }}
     >
       <img
         src={photoURL}

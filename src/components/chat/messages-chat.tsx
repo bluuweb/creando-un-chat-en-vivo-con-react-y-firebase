@@ -31,7 +31,7 @@ const MessagesChat = ({ friend }: MessagesChatProps) => {
     return () => unSubscribe();
 
     // eslint-disable-next-line
-  }, []);
+  }, [friend]);
 
   return (
     // <ScrollArea
