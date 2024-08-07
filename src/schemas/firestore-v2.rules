@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    match /users/{userId} {
+      allow delete: if false;
+      allow create: if request.auth != null;
+      
+      allow update: 
+      	if request.auth != null;
+      
+      allow get: if request.auth != null;
+      allow list: if request.auth != null;
+    }
+    
+    function roomsFieldsAreValidTypes(docData) {
+       return docData.messages is list &&
+            docData.users is list;
+    }
+    
+    match /rooms/{roomId} {
+    	allow delete: if false;
+      allow create: 
+      	if request.auth != null &&
+        roomsFieldsAreValidTypes(request.resource.data);
+      
+      allow update: 
+      	if request.auth != null &&
+        request.auth.uid in resource.data.users;
+      
+      allow get: 
+      	if request.auth != null &&
+        request.auth.uid in resource.data.users;
+    }
+    
+  }
+}
+
+
+
+
+
+
+
+
+
+

@@ -34,6 +34,10 @@ const MessagesChat = ({ friend }: MessagesChatProps) => {
   }, []);
 
   return (
+    // <ScrollArea
+    //   className="bg-indigo-100 p-4 space-y-2"
+    //   ref={containerRef}
+    // >
     <main
       ref={containerRef}
       className="bg-indigo-100 p-4 space-y-2 custom-scrollbar"
@@ -51,83 +55,8 @@ const MessagesChat = ({ friend }: MessagesChatProps) => {
           isCurrentUser={message.uid === currentUser?.uid}
         />
       ))}
-
-      {/* <Message
-        message="Hello, how are you?"
-        time="10:00 AM"
-        photoURL="https://randomuser.me/api/portraits/women/19.jpg"
-        isCurrentUser={false}
-      />
-      <Message
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            aut modi non a dolorem tempora hic dolorum, dolores perferendis
-            incidunt magnam vitae labore sint sunt consequuntur ad culpa,
-            voluptatum eligendi."
-        time="right now"
-        photoURL="https://randomuser.me/api/portraits/women/12.jpg"
-        isCurrentUser={true}
-      />
-      <Message
-        message="Hello, how are you?"
-        time="10:00 AM"
-        photoURL="https://randomuser.me/api/portraits/women/19.jpg"
-        isCurrentUser={false}
-      />
-      <Message
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            aut modi non a dolorem tempora hic dolorum, dolores perferendis
-            incidunt magnam vitae labore sint sunt consequuntur ad culpa,
-            voluptatum eligendi."
-        time="right now"
-        photoURL="https://randomuser.me/api/portraits/women/12.jpg"
-        isCurrentUser={true}
-      />
-      <Message
-        message="Hello, how are you?"
-        time="10:00 AM"
-        photoURL="https://randomuser.me/api/portraits/women/19.jpg"
-        isCurrentUser={false}
-      />
-      <Message
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            aut modi non a dolorem tempora hic dolorum, dolores perferendis
-            incidunt magnam vitae labore sint sunt consequuntur ad culpa,
-            voluptatum eligendi."
-        time="right now"
-        photoURL="https://randomuser.me/api/portraits/women/12.jpg"
-        isCurrentUser={true}
-      />
-      <Message
-        message="Hello, how are you?"
-        time="10:00 AM"
-        photoURL="https://randomuser.me/api/portraits/women/19.jpg"
-        isCurrentUser={false}
-      />
-      <Message
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            aut modi non a dolorem tempora hic dolorum, dolores perferendis
-            incidunt magnam vitae labore sint sunt consequuntur ad culpa,
-            voluptatum eligendi."
-        time="right now"
-        photoURL="https://randomuser.me/api/portraits/women/12.jpg"
-        isCurrentUser={true}
-      />
-      <Message
-        message="Hello, how are you?"
-        time="10:00 AM"
-        photoURL="https://randomuser.me/api/portraits/women/19.jpg"
-        isCurrentUser={false}
-      />
-      <Message
-        message="Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis
-            aut modi non a dolorem tempora hic dolorum, dolores perferendis
-            incidunt magnam vitae labore sint sunt consequuntur ad culpa,
-            voluptatum eligendi."
-        time="right now"
-        photoURL="https://randomuser.me/api/portraits/women/12.jpg"
-        isCurrentUser={true}
-      /> */}
     </main>
+    // </ScrollArea>
   );
 };
 export default MessagesChat;
